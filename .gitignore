@@ -1,0 +1,77 @@
+# ======================================================
+# FRONTEND (Next.js / Node)
+# ======================================================
+
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/versions
+
+# Testing
+frontend/coverage/
+
+# Next.js build
+frontend/.next/
+frontend/out/
+
+# Production build
+frontend/build/
+
+# Misc
+frontend/.DS_Store
+frontend/*.pem
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Env files
+frontend/.env*
+.env*
+
+
+# ======================================================
+# BACKEND (Python / FastAPI)
+# ======================================================
+
+backend/__pycache__/
+backend/.pytest_cache/
+backend/venv/
+backend/.env
+
+# Python bytecode
+*.pyc
+
+
+# ======================================================
+# MACHINE LEARNING DATA
+# ======================================================
+
+data/raw/
+data/processed/
+data/models/
+
+
+# ======================================================
+# SYSTEM / EDITOR / OS FILES
+# ======================================================
+
+.DS_Store
+*.log
+Thumbs.db
+
+.vscode/
+.idea/
+
+
+# ======================================================
+# Vercel (frontend hosting)
+# ======================================================
+
+.vercel

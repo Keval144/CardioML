@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: cardio-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    restart: always
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: cardio-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    command: bun run start -H 0.0.0.0 -p 3000
+    depends_on:
+      - backend
+    restart: always
