@@ -2,5 +2,4 @@ fastapi
 uvicorn
 joblib
 pandas
-numpy
 pydantic
