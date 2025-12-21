@@ -1,12 +1,8 @@
 numpy
 pandas
 scikit-learn==1.6.1
-matplotlib
-seaborn
 joblib
-fastapi[standard]
+fastapi
+uvicorn
 pydantic
 python-multipart
-apscheduler
-jupyter
-kagglehub
