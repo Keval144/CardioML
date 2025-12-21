@@ -1,0 +1,11 @@
+[project]
+name = "cardioml"
+version = "0.1.0"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "joblib",
+    "scikit-learn==1.6.1",
+    "pandas",
+    "numpy"
+]
