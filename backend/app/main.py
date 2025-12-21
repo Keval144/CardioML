@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from pydantic import BaseModel
 from app.models.CardioModel import CardioModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,18 +44,21 @@ async def get_prediction(payload: PatientSchema):
 
 
 
-origins = [
-    "https://cardioml.vercel.app",
-    "http://localhost:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["https://cardioml.vercel.app", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Manual OPTIONS override for Vercel
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str, response: Response):
+    response.headers["Access-Control-Allow-Origin"] = "https://cardioml.vercel.app"
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 if __name__ == "__main__":
     import uvicorn
