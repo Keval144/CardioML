@@ -37,7 +37,11 @@ class PatientSchema(BaseModel):
     alco: bool = False
     active: bool = False
 
-    
+@app.get("/")
+def read_root():
+    return {"status": "Backend is running"}
+
+
 @app.post("/predict")
 async def get_prediction(payload: PatientSchema):
     data_dict = payload.model_dump()
@@ -53,7 +57,7 @@ async def get_prediction(payload: PatientSchema):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://cardioml.vercel.app", "http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
