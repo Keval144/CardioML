@@ -25,32 +25,47 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn-ui/radio-group";
 import { Separator } from "@/components/shadcn-ui/separator";
 
-// Zod schema
 const formSchema = z
   .object({
-    age: z
-      .number({ error: "Age is required" })
-      .min(18, { message: "Age must be at least 18" })
-      .max(120, { message: "Age must be less than 120" }),
-    height: z
-      .number({ error: "Height is required" })
-      .min(100, { message: "Height must be at least 100 cm" })
-      .max(250, { message: "Height must be less than 250 cm" }),
-    weight: z
-      .number({ error: "Weight is required" })
-      .min(30, { message: "Weight must be at least 30 kg" })
-      .max(300, { message: "Weight must be less than 300 kg" }),
-    gender: z.enum(["0", "1"] as const),
-    ap_hi: z
-      .number({ error: "Systolic BP is required" })
-      .min(60, { message: "Systolic BP must be at least 60" })
-      .max(250, { message: "Systolic BP must be less than 250" }),
-    ap_lo: z
-      .number({ error: "Diastolic BP is required" })
-      .min(40, { message: "Diastolic BP must be at least 40" })
-      .max(150, { message: "Diastolic BP must be less than 150" }),
-    cholesterol: z.enum(["1", "2", "3"] as const),
-    gluc: z.enum(["1", "2", "3"] as const),
+    age: z.coerce
+      .number()
+      .min(18, "Age must be at least 18")
+      .max(120, "Age must be less than 120"),
+    height: z.coerce
+      .number()
+      .min(100, "Height must be at least 100 cm")
+      .max(250, "Height must be less than 250 cm"),
+    weight: z.coerce
+      .number()
+      .min(30, "Weight must be at least 30 kg")
+      .max(300, "Weight must be less than 300 kg"),
+    gender: z.coerce
+      .number()
+      .pipe(z.union([z.literal(1), z.literal(2)], "Please select a gender")),
+    ap_hi: z.coerce
+      .number()
+      .min(60, "Systolic BP must be at least 60")
+      .max(250, "Systolic BP must be less than 250"),
+    ap_lo: z.coerce
+      .number()
+      .min(40, "Diastolic BP must be at least 40")
+      .max(150, "Diastolic BP must be less than 150"),
+    cholesterol: z.coerce
+      .number()
+      .pipe(
+        z.union(
+          [z.literal(1), z.literal(2), z.literal(3)],
+          "Selection required",
+        ),
+      ),
+    gluc: z.coerce
+      .number()
+      .pipe(
+        z.union(
+          [z.literal(1), z.literal(2), z.literal(3)],
+          "Selection required",
+        ),
+      ),
     smoke: z.boolean().default(false),
     alco: z.boolean().default(false),
     active: z.boolean().default(false),
@@ -64,12 +79,26 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function HealthPredictionForm() {
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema) as unknown as Resolver<FormData>,
+    // Type assertion to Resolver<FormData> fixes the coerce/unknown mismatch
+    resolver: zodResolver(formSchema) as Resolver<FormData>,
     mode: "onBlur",
+    defaultValues: {
+      age: "" as unknown as number,
+      height: "" as unknown as number,
+      weight: "" as unknown as number,
+      ap_hi: "" as unknown as number,
+      ap_lo: "" as unknown as number,
+      gender: undefined, // undefined triggers the union error message
+      cholesterol: 1,
+      gluc: 1,
+      smoke: false,
+      alco: false,
+      active: false,
+    },
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log("Form submitted:", data);
+    console.log("Form data submitted (numeric values):", data);
   };
 
   return (
@@ -78,26 +107,25 @@ export default function HealthPredictionForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="bg-card dark:bg-card mx-4 w-full max-w-full space-y-8 rounded-xl p-4 shadow-md sm:mx-auto sm:max-w-md sm:p-8 md:max-w-3xl lg:max-w-5xl dark:border"
       >
-        {/* Personal Information */}
         <div className="space-y-4">
-          <h1 className="text-3xl font-semibold">Predict CVD</h1>
+          <h1 className="text-center text-3xl font-semibold md:text-left">
+            Predict CVD
+          </h1>
+          <h2 className="text-xl font-semibold">Simple Information</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Age */}
             <FormField
+              control={form.control}
               name="age"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Age</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter your age"
-                      {...field}
-                    />
-                  </FormControl>
                   <FormDescription>
-                    Age must be between 18 and 120 years.
+                    Please enter your age in years.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="number" placeholder="Years" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -105,20 +133,17 @@ export default function HealthPredictionForm() {
 
             {/* Height */}
             <FormField
+              control={form.control}
               name="height"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Height (cm)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter height"
-                      {...field}
-                    />
-                  </FormControl>
                   <FormDescription>
-                    Enter height in centimeters (100-250 cm).
+                    Measured in centimeters (cm) without shoes.
                   </FormDescription>
+                  <FormControl>
+                    <Input type="number" placeholder="e.g. 175" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -126,35 +151,36 @@ export default function HealthPredictionForm() {
 
             {/* Weight */}
             <FormField
+              control={form.control}
               name="weight"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Weight (kg)</FormLabel>
+                  <FormDescription>Measured in kilograms (kg).</FormDescription>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.1"
-                      placeholder="Enter weight"
+                      placeholder="e.g. 70.5"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter weight in kilograms (30-300 kg).
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Gender */}
+            {/* Gender Select - Handled as number */}
             <FormField
+              control={form.control}
               name="gender"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
+                  <FormDescription>Biological sex at birth.</FormDescription>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    value={field.value ? field.value.toString() : ""}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -162,8 +188,8 @@ export default function HealthPredictionForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="0">Female</SelectItem>
-                      <SelectItem value="1">Male</SelectItem>
+                      <SelectItem value="1">Female</SelectItem>
+                      <SelectItem value="2">Male</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -173,151 +199,131 @@ export default function HealthPredictionForm() {
           </div>
         </div>
 
-        <Separator className="my-6" />
+        <Separator />
 
-        {/* Examination Features */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Examination Features</h2>
+          <h2 className="text-xl font-semibold">Medical Examination</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {/* Systolic BP */}
             <FormField
+              control={form.control}
               name="ap_hi"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Systolic BP</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Systolic BP" {...field} />
-                  </FormControl>
+                  <FormLabel>Systolic Blood Pressure</FormLabel>
                   <FormDescription>
-                    The top number in your blood pressure reading.
+                    Pressure in your arteries when your heart beats.(Upper
+                    Reading of Machine)
                   </FormDescription>
+                  <FormControl>
+                    <Input type="number" placeholder="ap_high" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Diastolic BP */}
             <FormField
+              control={form.control}
               name="ap_lo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Diastolic BP</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Diastolic BP"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Diastolic Blood Pressure</FormLabel>
                   <FormDescription>
-                    The bottom number in your blood pressure reading.
+                    Pressure in your arteries when your heart rests between
+                    beats.(Lower Readings of Machine)
                   </FormDescription>
+                  <FormControl>
+                    <Input type="number" placeholder="ap_low" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
 
-          {/* Cholesterol */}
-          <FormField
-            name="cholesterol"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cholesterol</FormLabel>
-                <FormDescription>
-                  Select your cholesterol level.
-                </FormDescription>
-                <FormControl>
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="flex gap-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="1" id="chol-1" />
-                      <label htmlFor="chol-1">Normal</label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="2" id="chol-2" />
-                      <label htmlFor="chol-2">Above Normal</label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="3" id="chol-3" />
-                      <label htmlFor="chol-3">Well Above Normal</label>
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Cholesterol and Glucose Radios - Handled as numbers */}
+          {["cholesterol", "gluc"].map((name) => (
+            <FormField
+              key={name}
+              control={form.control}
+              name={name as "cholesterol" | "gluc"}
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel className="capitalize">
+                    {name === "gluc" ? "Glucose" : name}
+                  </FormLabel>
 
-          {/* Glucose */}
-          <FormField
-            name="gluc"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Glucose</FormLabel>
-                <FormDescription>Select your glucose level.</FormDescription>
-                <FormControl>
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="flex gap-4"
-                  >
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="1" id="gluc-1" />
-                      <label htmlFor="gluc-1">Normal</label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="2" id="gluc-2" />
-                      <label htmlFor="gluc-2">Above Normal</label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="3" id="gluc-3" />
-                      <label htmlFor="gluc-3">Well Above Normal</label>
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormDescription>
+                    {name === "cholesterol"
+                      ? "Total cholesterol level from your latest blood work."
+                      : "Blood sugar level measured during your last checkup."}
+                  </FormDescription>
+
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value?.toString()}
+                      className="flex flex-col gap-4 sm:flex-row"
+                    >
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="1" id={`${name}-1`} />
+                        <label htmlFor={`${name}-1`}>Normal</label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="2" id={`${name}-2`} />
+                        <label htmlFor={`${name}-2`}>Above Normal</label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value="3" id={`${name}-3`} />
+                        <label htmlFor={`${name}-3`}>Well Above Normal</label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
         </div>
 
-        <Separator className="my-6" />
+        <Separator />
 
-        {/* Lifestyle Features */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Lifestyle Features</h2>
+          <h2 className="text-xl font-semibold">Lifestyle Factors</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {["smoke", "alco", "active"].map((fieldName) => (
+            {["smoke", "alco", "active"].map((name) => (
               <FormField
-                key={fieldName}
-                name={fieldName as keyof FormData}
+                key={name}
+                control={form.control}
+                name={name as "smoke" | "alco" | "active"}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="capitalize">{fieldName}</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="capitalize">
+                      {name === "alco" ? "Alcohol" : name}
+                    </FormLabel>
+
                     <FormDescription>
-                      {fieldName === "smoke"
-                        ? "Do you currently smoke?"
-                        : fieldName === "alco"
-                          ? "Do you consume alcohol?"
-                          : "Are you physically active?"}
+                      {name === "smoke" &&
+                        "Do you currently smoke tobacco products?"}
+                      {name === "alco" &&
+                        "Do you consume alcohol on a regular basis?"}
+                      {name === "active" &&
+                        "Do you maintain a regular physical exercise routine?"}
                     </FormDescription>
+
                     <FormControl>
                       <RadioGroup
                         value={field.value ? "yes" : "no"}
-                        onValueChange={(val) => field.onChange(val === "yes")}
+                        onValueChange={(v) => field.onChange(v === "yes")}
                         className="flex gap-4"
                       >
-                        <div className="flex items-center gap-2">
-                          <RadioGroupItem value="yes" id={`${fieldName}-yes`} />
-                          <label htmlFor={`${fieldName}-yes`}>Yes</label>
+                        <div className="flex items-center gap-1">
+                          <RadioGroupItem value="yes" id={`${name}-y`} />
+                          <label htmlFor={`${name}-y`}>Yes</label>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <RadioGroupItem value="no" id={`${fieldName}-no`} />
-                          <label htmlFor={`${fieldName}-no`}>No</label>
+                        <div className="flex items-center gap-1">
+                          <RadioGroupItem value="no" id={`${name}-n`} />
+                          <label htmlFor={`${name}-n`}>No</label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -329,8 +335,8 @@ export default function HealthPredictionForm() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Predict CVD
+        <Button type="submit" className="w-full text-lg">
+          Predict Cardiovascular Risk
         </Button>
       </form>
     </Form>
