@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://cardiomlfastapi.vercel.app/:path*", // Your Backend URL
+        destination: "https://cardioml-9qxc.onrender.com/:path*",
       },
     ];
   },
