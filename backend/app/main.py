@@ -3,8 +3,8 @@ from fastapi.responses import HTMLResponse
 
 
 app = FastAPI(
-    title="Vercel + FastAPI",
-    description="Vercel + FastAPI",
+    title="CardioML Backend",
+    description="Backend Apis That Responses to froms",
     version="1.0.0",
 )
 

@@ -35,7 +35,7 @@ export function ThemeSwitch({
       variant={variant}
       size="icon"
       aria-label="Toggle theme"
-      onClick={toggleTheme}
+      onClick={toggleTheme} 
       className={cn("relative cursor-pointer rounded-full", className)}
     >
       <Sun
