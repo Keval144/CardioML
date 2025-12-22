@@ -8,8 +8,10 @@ import PredictForm from "./predict-form";
 
 export default function PredictPage() {
   return (
-    <div className="container mx-auto">
-      <div className="animate-in fade-in mx-auto max-w-6xl p-4 pt-17 duration-700">
+    // min-h-screen ensures the footer stays at the bottom
+    <div className="bg-background flex min-h-screen flex-col">
+      <div className="animate-in fade-in mx-auto w-full max-w-6xl flex-1 p-4 pt-17 duration-700">
+        {/* Header Section */}
         <div className="mt-6 flex items-center justify-between border-b pb-3 md:mt-12">
           <Button variant="ghost" size="sm" asChild className="group gap-2">
             <Link href="/">
@@ -18,20 +20,33 @@ export default function PredictPage() {
             </Link>
           </Button>
 
-          <Badge variant="outline" className="bg-background">
-            <Activity className="text-primary mr-1 h-3 w-3" />
-            Gradient Classifier
+          <Badge
+            variant="outline"
+            className="flex items-center gap-1.5 px-3 py-1"
+          >
+            <Activity className="text-primary h-3.5 w-3.5" />
+            <span className="font-medium">Gradient Classifier</span>
           </Badge>
         </div>
-        {/* Main Content Area */}
-        <div className="flex min-h-[calc(100vh-200px)] justify-center py-6 md:items-center md:py-12">
-          <div className="w-full max-w-6xl">
-            <div className="flex justify-center">
-              <PredictForm />
-            </div>
-            {/* Subtle Disclaimer to match the Result Page footer */}
+
+        <main className="flex flex-col items-center justify-center py-10 md:py-16">
+          <div className="w-full">
+            <PredictForm />
           </div>
-        </div>
+
+          {/* Enhanced Legal Note */}
+          <p className="text-muted-foreground mt-8 text-center text-[11px]">
+            By using this tool, you acknowledge that you have read and agreed to
+            our{" "}
+            <Link
+              href="/disclaimer"
+              className="decoration-primary/30 hover:text-foreground hover:decoration-primary font-semibold underline underline-offset-4 transition-colors"
+            >
+              Medical Disclaimer
+            </Link>
+            .
+          </p>
+        </main>
         <div className="mt-auto border-t py-6">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
             <p className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase">
@@ -44,6 +59,8 @@ export default function PredictPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer Section */}
     </div>
   );
 }

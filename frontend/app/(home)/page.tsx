@@ -8,6 +8,9 @@ export default function Home() {
       <Title />
       <HeartBeat />
       <Working />
+      <div className="text-muted-foreground mx-auto flex max-w-5xl items-center justify-center p-8 text-center text-[9px] font-bold tracking-[0.2em] uppercase">
+        Secure • Encrypted • Research Purpose Only
+      </div>
     </>
   );
 }
