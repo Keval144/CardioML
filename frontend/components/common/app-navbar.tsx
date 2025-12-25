@@ -21,7 +21,7 @@ export function AppNavbar() {
     { name: "Fun Facts", link: "/facts" },
     {
       name: "Model Info",
-      link: "/minfo",
+      link: "/model-info",
     },
     {
       name: "Disclaimer",
@@ -77,16 +77,16 @@ export function AppNavbar() {
               <span className="block">{item.name}</span>
             </a>
           ))}
-          {/* Mobile Signup Login */}
-          <div className="flex w-full flex-col gap-3">
+          {/* Mobile Predict */}
+          <div className="bg-primary flex w-full flex-col gap-3 rounded-xl p-2 text-center text-white">
             <Link href={"/predict"} className="w-full">
               Predict Now
             </Link>
-            <ThemeSwitch
-              variant="link"
-              className="pr-5.5 text-neutral-600 dark:text-white"
-            />
           </div>
+          <ThemeSwitch
+            variant="link"
+            className="pr-5.5 text-neutral-600 dark:text-white"
+          />
         </MobileNavMenu>
       </MobileNav>
     </Navbar>

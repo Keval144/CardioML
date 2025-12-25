@@ -5,6 +5,7 @@ from app.models.CardioModel import CardioModel
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import os
+import json
 
 app = FastAPI(
     title="CardioML Backend",
@@ -41,6 +42,12 @@ class PatientSchema(BaseModel):
 def read_root():
     return {"status": "Backend is running"}
 
+@app.get("/model-info")
+async def get_modelinfo():
+    with open("app\models\model-info.json", "r") as f:
+        data = json.load(f)
+    return data 
+
 
 @app.post("/predict")
 async def get_prediction(payload: PatientSchema):
@@ -67,7 +74,7 @@ app.add_middleware(
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str, response: Response):
     response.headers["Access-Control-Allow-Origin"] = "https://cardioml.vercel.app"
-    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "HEAD, POST, GET, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 

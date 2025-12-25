@@ -7,7 +7,7 @@ export default function HeartBeat() {
     "M0 50 L300 50 L315 42 L325 58 L335 50 L345 50 L355 10 L375 90 L395 50 L415 50 L430 38 L450 50 L800 50";
 
   return (
-    <div className="pointer-events-none flex w-full items-center justify-center overflow-hidden pb-10">
+    <div className="pointer-events-none flex w-full items-center justify-center py-8 sm:py-12 lg:py-16">
       <svg
         viewBox="0 0 800 100"
         className="h-12 w-full max-w-7xl sm:h-16"
