@@ -177,8 +177,8 @@ export default function PredictionResult({
                   AI Insight
                 </h4>
                 <p className="text-xs leading-relaxed font-medium">
-                  Confidence:{" "}
-                  <span className="text-primary font-bold">86.4%</span>
+                  Accuracy:{" "}
+                  <span className="text-primary font-bold">73.4%</span>
                 </p>
               </CardContent>
             </Card>
