@@ -109,7 +109,13 @@ export default function HealthPredictionForm() {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/predict`,
-        data,
+        data, // This is your payload
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+          },
+        },
       );
 
       // 1. Save to sessionStorage (Private, stays in this tab)

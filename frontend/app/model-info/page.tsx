@@ -21,10 +21,17 @@ import {
 async function getModelInfo() {
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const res = await fetch(`${API_URL}/model-info`, {
-      next: { revalidate: 24 * 60 * 60 },
-    });
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
 
+    const res = await fetch(`${API_URL}/model-info`, {
+      headers: {
+        "x-api-key": API_KEY, // Sending your secret key
+        "Content-Type": "application/json",
+      },
+      next: {
+        revalidate: 24 * 60 * 60, // Cache for 24 hours
+      },
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     return { data: await res.json(), error: false };
   } catch (err) {

@@ -32,8 +32,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Env files
-frontend/.env*
-.env*
+frontend/.env
+.env
 
 
 # ======================================================

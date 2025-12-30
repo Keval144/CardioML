@@ -12,18 +12,18 @@ import {
 } from "@/components/shadcn-ui/card";
 import { Badge } from "@/components/shadcn-ui/badge";
 
-/*
-  Unified DataInsight page
-  - Uses shadcn theme variables only (no hard-coded colors)
-  - Cleaner section components, consistent spacing & cards
-  - Server component (async) compatible with Next.js app router
-*/
 
 async function getDataInsight() {
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
+
     const res = await fetch(`${API_URL}/data-insight`, {
-      // revalidate once a day
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+      },
       next: { revalidate: 24 * 60 * 60 },
     });
 
