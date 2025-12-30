@@ -44,7 +44,7 @@ backend/__pycache__/
 backend/.pytest_cache/
 backend/venv/
 backend/.env
-
+backend/app/models/.ipynb_checkpoints
 # Python bytecode
 *.pyc
 

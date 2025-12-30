@@ -75,10 +75,12 @@ class PatientSchema(BaseModel):
 
 # --- ROUTES ---
 
-@app.get("/")
+#For Uptime bot
+@app.head("/")
 @limiter.limit("10/minute")
-def read_root(request: Request):
-    return {"status": "Backend is running"}
+def read_root(response:Response):
+    response.status_code = 200
+    return 
 
 @app.get("/model-info")
 @limiter.limit("5/minute")
@@ -133,7 +135,7 @@ app.add_middleware(
 async def preflight_handler(rest_of_path: str, response: Response):
     # This ensures the browser knows x-api-key is an allowed header
     response.headers["Access-Control-Allow-Origin"] = ALLOWED_ORIGINS[0] if ALLOWED_ORIGINS else "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "HEAD, POST, GET, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, x-api-key"
     return response
 

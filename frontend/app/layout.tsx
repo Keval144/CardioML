@@ -6,6 +6,8 @@ import "./globals.css";
 import { AppNavbar } from "@/components/common/app-navbar";
 import Footer from "@/components/common/footer";
 import LenisProvider from "@/components/providers/lenis-provider";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "CardioML",
@@ -36,6 +38,8 @@ export default function RootLayout({
             <Toaster />
           </LenisProvider>
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
