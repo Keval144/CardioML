@@ -121,7 +121,7 @@ cd frontend
 2. Install dependencies:
 
 ```bash
-npm install
+bun install
 # or
 yarn
 ```
@@ -129,7 +129,7 @@ yarn
 3. Run the development server:
 
 ```bash
-npm run dev
+bun run dev
 # or
 yarn dev
 ```
@@ -192,20 +192,6 @@ Adjust field names to match your backend payload.
 
 ---
 
-## Screenshots and assets to include in README or marketing
-
-Include a small gallery near the top of the README and in your LinkedIn post. Suggested images:
-
-1. Hero screenshot of the landing page
-2. Input form where user enters clinical values
-3. Prediction results page showing probability and explanation
-4. Simple architecture diagram (Frontend → Backend (FastAPI) → Model)
-5. Notebook snapshot showing model evaluation metrics or confusion matrix
-
-Keep images small and compressed and add alt text.
-
----
-
 ## Development notes and suggestions
 
 * Consider moving preprocessing into a versioned pipeline (scikit-learn Pipeline or mlflow) so the same transformations apply during training and inference.
@@ -228,11 +214,6 @@ Contributions are welcome. Suggested workflow:
 Add a CONTRIBUTING.md if you expect others to contribute regularly.
 
 ---
-
-## License
-
-If you have a license pick one and add a license file. If you want a recommendation, MIT is a permissive choice for projects intended to demonstrate work.
-
 ---
 
 ## Contact
@@ -244,7 +225,3 @@ Project: CardioML
 Live demo: [https://cardioml.vercel.app/](https://cardioml.vercel.app/)
 
 ---
-
-### Notes about repository exploration
-
-I examined the repository root and confirmed the presence of `backend`, `frontend`, and `deploy` folders and several Jupyter notebooks. Some file specifics and exact entrypoints were not accessible due to GitHub page rendering limitations during the automated scan. If you would like a README with exact commands and file references, paste the names of the main entry files or grant access and I will update the README to match the repository exactly.
