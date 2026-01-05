@@ -103,16 +103,24 @@ export default async function ModelInfo() {
                 <CardHeader>
                   <CardTitle>Hyperparameters</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2 text-sm">
+                <CardContent className="space-y-4 text-sm">
                   <Row
                     label="Estimators"
-                    value={modelInfo.model.n_estimators}
+                    value={modelInfo.hyperparameters.n_estimators}
                   />
                   <Row
                     label="Learning Rate"
-                    value={modelInfo.model.learning_rate}
+                    value={modelInfo.hyperparameters.learning_rate}
                   />
-                  <Row label="Max Depth" value={modelInfo.model.max_depth} />
+                  <Row
+                    label="Max Depth"
+                    value={modelInfo.hyperparameters.max_depth}
+                  />
+                  <Row
+                    label="Min Samples / Leaf"
+                    value={modelInfo.hyperparameters.min_samples_leaf}
+                  />
+                  
                 </CardContent>
               </Card>
 
